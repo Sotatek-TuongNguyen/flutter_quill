@@ -121,7 +121,9 @@ class QuillController extends ChangeNotifier {
   /// Only attributes applied to all characters within this range are
   /// included in the result.
   Style getSelectionStyle() {
-    if(_composing != TextRange.empty) {
+    final text = document.toPlainText();
+    final isNewLine = text.isNotEmpty && selection.start > 0 && text[selection.start - 1] == '\n';
+    if(_composing != TextRange.empty || isNewLine) {
       return document
         .collectStyle(selection.start, selection.end - selection.start)
         .mergeAll(toggledStyle);
