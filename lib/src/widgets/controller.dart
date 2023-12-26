@@ -121,9 +121,9 @@ class QuillController extends ChangeNotifier {
   /// Only attributes applied to all characters within this range are
   /// included in the result.
   Style getSelectionStyle() {
+    final selectionStart = selection.start == 0 || selection.end > selection.start ? selection.start + 1 : selection.start;
     return document
-        .collectStyle(selection.start, selection.end - selection.start)
-        .mergeAll(toggledStyle);
+        .collectStyle(selectionStart, 0);
   }
 
   // Increases or decreases the indent of the current selection by 1.
@@ -354,6 +354,10 @@ class QuillController extends ChangeNotifier {
 
   void formatSelection(Attribute? attribute) {
     formatText(selection.start, selection.end - selection.start, attribute);
+    if(selection.end > selection.start) {
+      toggledStyle = getSelectionStyle();
+      notifyListeners();
+    }
   }
 
   void moveCursorToStart() {
